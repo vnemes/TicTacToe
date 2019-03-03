@@ -10,6 +10,7 @@ int server_listen(int portno) {
     char buffer[256];
     struct sockaddr_in serv_addr, cli_addr;
     int n;
+    printf("Server started listening on port %d\n", portno);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         exit_with_error("ERROR opening socket");
@@ -27,12 +28,20 @@ int server_listen(int portno) {
                        &clilen);
     if (newsockfd < 0)
         exit_with_error("ERROR on accept");
-    bzero(buffer, 256);
-    n = read(newsockfd, buffer, 255);
-    if (n < 0) exit_with_error("ERROR reading from socket");
-    printf("Here is the message: %s\n", buffer);
-    n = write(newsockfd, "I got your message", 18);
-    if (n < 0) exit_with_error("ERROR writing to socket");
+
+    while ((n = read(newsockfd, buffer, 255)) > 0) {
+        printf("Here is the message: %s\n", buffer);
+        n = write(newsockfd, buffer, strlen(buffer));
+        if (n < 0) exit_with_error("ERROR writing to socket");
+    }
+    close(newsockfd);
+    close(sockfd);
+//    bzero(buffer, 256);
+//    n = read(newsockfd, buffer, 255);
+//    if (n < 0) exit_with_error("ERROR reading from socket");
+//    printf("Here is the message: %s\n", buffer);
+//    n = write(newsockfd, "I got your message", 18);
+//    if (n < 0) exit_with_error("ERROR writing to socket");
     close(newsockfd);
     close(sockfd);
 }

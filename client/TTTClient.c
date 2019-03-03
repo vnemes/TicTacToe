@@ -10,6 +10,8 @@ int client_connect(int portno, char *server_host) {
     struct hostent *server;
 
     char buffer[256];
+
+    printf("Client attempting connection on port to host %s:%d\n",server_host,portno);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         exit_with_error("ERROR opening socket");
@@ -26,17 +28,28 @@ int client_connect(int portno, char *server_host) {
     serv_addr.sin_port = htons(portno);
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         exit_with_error("ERROR connecting");
+
     printf("Please enter the message: ");
+    fflush(stdin);
     bzero(buffer, 256);
     fgets(buffer, 255, stdin);
-    n = write(sockfd, buffer, strlen(buffer));
-    if (n < 0)
-        exit_with_error("ERROR writing to socket");
-    bzero(buffer, 256);
-    n = read(sockfd, buffer, 255);
-    if (n < 0)
-        exit_with_error("ERROR reading from socket");
-    printf("%s\n", buffer);
+
+    while (strncmp(buffer, "exit", 4)) {
+
+        n = write(sockfd, buffer, strlen(buffer));
+        if (n < 0)
+            exit_with_error("ERROR writing to socket");
+        bzero(buffer, 256);
+        n = read(sockfd, buffer, 255);
+        if (n < 0)
+            exit_with_error("ERROR reading from socket");
+        printf("%s\n", buffer);
+
+        printf("Please enter the message: ");
+        fflush(stdin);
+        bzero(buffer, 256);
+        fgets(buffer, 255, stdin);
+    }
     close(sockfd);
     return 0;
 }
