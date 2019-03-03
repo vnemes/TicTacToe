@@ -6,7 +6,7 @@
 
 
 int main(int argc, char *argv[]) {
-    printf("Please select run mode: \n"); 
+    printf("Please select run mode: \n");
     printf("1. Server\n");
     printf("2. Client\n");
     int choice;

@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "util/utils.h"
 
 //http://www.linuxhowtos.org/C_C++/socket.htm
 

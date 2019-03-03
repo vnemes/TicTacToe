@@ -3,4 +3,4 @@ project(TicTacToe C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(TicTacToe main.c TTTServer.c TTTServer.h TTTClient.c TTTClient.h)
+add_executable(TicTacToe main.c TTTServer.c TTTServer.h TTTClient.c TTTClient.h util/utils.c util/utils.h)
