@@ -6,7 +6,7 @@
 
 
 int main(int argc, char *argv[]) {
-    printf("Welcome to TicTacToe on Sockets! Select a run configuration to begin:\n");
+    printf("Welcome to TicTacToe with Sockets! Choose a run configuration to begin:\n");
     printf("1. Server\n");
     printf("2. Client\n");
     printf("Your selection: ");

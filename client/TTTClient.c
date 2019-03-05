@@ -25,7 +25,6 @@ void client_connect(char *player_name, int portno, char *server_host) {
 
     char *buffer = malloc(NET_BUF_SZ);
 
-
     printf("Client attempting connection to host %s:%d\n", server_host, portno);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
@@ -41,6 +40,7 @@ void client_connect(char *player_name, int portno, char *server_host) {
           (char *) &serv_addr.sin_addr.s_addr,
           server->h_length);
     serv_addr.sin_port = htons(portno);
+
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         exit_with_error("ERROR connecting");
     bzero(buffer,NET_BUF_SZ);
@@ -75,6 +75,8 @@ void client_connect(char *player_name, int portno, char *server_host) {
                         printf("You entered an invalid move!\n");
                         prompt_new_move(sockfd, buffer, symbol, opponent_name);
                     } else if (EXPECT_COMMAND(buffer, GAME_END_RESPONSE)) {
+                        clear();
+                        print_board();
                         char* winner = &buffer[strlen(GAME_END_RESPONSE)];
                         if (!strncmp(winner,DRAW_REPR, strlen(DRAW_REPR)))
                             printf("Game ended in a draw!\n");

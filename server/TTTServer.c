@@ -10,6 +10,7 @@ player_st *wait_for_player_connection(int sockfd, socklen_t *clilen, player_st *
 void notify_player_start(player_st *player, const char *opponent_name);
 win_status_en handle_player_move(const player_st *player);
 void notify_game_end(const player_st* player1, const player_st* player2, win_status_en win);
+int play_round(int sockfd, socklen_t *clilen, struct sockaddr_in *cli_addr);
 
 void server_listen(uint16_t portno) {
     int sockfd;
@@ -30,14 +31,19 @@ void server_listen(uint16_t portno) {
     listen(sockfd, 2);
     clilen = sizeof(cli_addr);
 
+    while (play_round(sockfd, &clilen, &cli_addr));
+    close(sockfd);
+}
+
+int play_round(int sockfd, socklen_t *clilen, struct sockaddr_in *cli_addr) {
     player_st *player1 = malloc(sizeof(player_st)), *player2 = malloc(sizeof(player_st));
     player1->buffer = malloc(NET_BUF_SZ);
     player2->buffer = malloc(NET_BUF_SZ);
     player1->x_or_o = _X_;
     player2->x_or_o = _O_;
-    player1 = wait_for_player_connection(sockfd, &clilen, player1, &cli_addr);
+    player1 = wait_for_player_connection(sockfd, clilen, player1, cli_addr);
     if (player1) {
-        player2 = wait_for_player_connection(sockfd, &clilen, player2, &cli_addr);
+        player2 = wait_for_player_connection(sockfd, clilen, player2, cli_addr);
         if (player2) {
             init_board();
             notify_player_start(player1, player2->name);
@@ -49,12 +55,17 @@ void server_listen(uint16_t portno) {
                     if (handle_player_move(player2) == ONGOING)
                         continue;
                 notify_game_end(player1,player2,check_win_condition());
-                close(sockfd);
-                return;
+                free(player1->buffer);
+                free(player2->buffer);
+                free(player1->name);
+                free(player2->name);
+                free(player1);
+                free(player2);
+                return 1;
             }
         }
     }
-    close(sockfd);
+    return 0;
 }
 
 player_st *wait_for_player_connection(int sockfd, socklen_t *clilen, player_st *player,
