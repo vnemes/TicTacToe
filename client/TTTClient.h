@@ -14,9 +14,12 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include "../util/utils.h"
+#include "../socket_messages.h"
 
 //http://www.linuxhowtos.org/C_C++/socket.htm
 
-int client_connect(int portno, char *server_host);
+void start_client();
+
+static void client_connect(char* player_name, int portno, char *server_host);
 
 #endif //TICTACTOE_TTTCLIENT_H

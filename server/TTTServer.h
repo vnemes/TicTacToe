@@ -13,7 +13,15 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "../util/utils.h"
+#include "../socket_messages.h"
 
-int server_listen(int portno);
+typedef struct _player {
+    int fd;
+    char* name;
+    char* buffer;
+    char x_or_o;
+} player_st;
+
+void server_listen(uint16_t portno);
 
 #endif //TICTACTOE_TTTSERVER_H

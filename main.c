@@ -6,15 +6,16 @@
 
 
 int main(int argc, char *argv[]) {
-    printf("Please select run mode: \n");
+    printf("Welcome to TicTacToe on Sockets! Select a run configuration to begin:\n");
     printf("1. Server\n");
     printf("2. Client\n");
+    printf("Your selection: ");
     int choice;
     scanf("%d", &choice);
     while (getchar() != '\n'); // remove trailing newline
     if (choice == 1)
         server_listen(2020);
     else
-        client_connect(2020, "localhost");
+        start_client();
     return 0;
 }
